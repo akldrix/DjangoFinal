@@ -1,0 +1,17 @@
+{% extends "myauth/base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+<h1>Editing profile for: {{ object.user.username }}</h1>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Save Changes</button>
+</form>
+
+<p>
+  <a href="{% url 'myauth:user-detail' pk=object.user.pk %}">Cancel</a>
+</p>
+{% endblock %}

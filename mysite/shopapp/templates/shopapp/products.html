@@ -1,0 +1,59 @@
+{% extends 'shopapp/base.html' %}
+
+{% load i18n %}
+
+{% block title %}
+{% translate "Products" %}
+{% endblock title %}
+
+{% block body %}
+<h1>{% translate "Products:" %}</h1>
+<div>
+  {% if products %}
+  <div>
+    {% blocktranslate count product_count=products|length %}
+    There is only one product
+    {% plural %}
+    There are {{ product_count }} products.
+
+    {% endblocktranslate %}
+
+  </div>
+  <ul>
+    {% for product in products %}
+
+    <li>
+      {% if product.preview %}
+      <img src="{{ product.preview.url }}" alt=" {{ product.preview.name }}" style="max-height: 20px;">
+      {% endif %}
+      {% translate "No discount" as no_discount %}
+
+      <a href="{% url 'shopapp:product_details' pk=product.pk %}">{{ product.name }}</a> {% translate "for" %}  {{ product.price }}$, {% translate "Discount" %}: {% firstof product.discount no_discount %}</li>
+    {% endfor %}
+  </ul>
+  <div>
+    {% if perms.shopapp.add_product %}
+    <a href="{% url 'shopapp:product_create' %}">
+      {% translate "Create a new product" %}
+    </a>
+
+    {% else %}
+    <p>{% translate "You don't have permission to create a new product" %}</p>
+    {% endif %}
+
+  </div>
+
+  {% else %}
+  {% url 'shopapp:product_create' as create_product_url %}
+  {% blocktranslate %}
+  <a href="{{ create_product_url }}">
+    "Create a first product"
+  </a>
+
+  <p>"No products yet"</p>
+  {% endblocktranslate %}
+
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command:
+      - gunicorn
+      - mysite.wsgi:application
+      - --bind
+      - 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    restart: always
+    env_file:
+        - .env
+    logging:
+      driver: "json-file"
+      options: 
+        max-file: "10"
+        max-size: "200k"
+    volumes:
+      - ./mysite/database:/app/database
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_volume:/app/staticfiles:ro
+    depends_on:
+      - app
+    restart: always
+
+volumes:
+  static_volume:

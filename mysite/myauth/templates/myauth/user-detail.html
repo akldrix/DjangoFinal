@@ -1,0 +1,35 @@
+{% extends "myauth/base.html" %}
+
+{% block title %}
+  Profile of {{ viewed_user.username }}
+{% endblock title %}
+
+{% block body %}
+<h1>Profile of: {{ viewed_user.username }}</h1>
+
+<h2>Detail</h2>
+<p>Username: {{ viewed_user.username }}</p>
+<p>First name: {{ viewed_user.first_name|default:"Not set" }}</p>
+<p>Last name: {{ viewed_user.last_name|default:"Not set" }}</p>
+<p>Email: {{ viewed_user.email|default:"Not set" }}</p>
+<p>Bio: {{ viewed_user.profile.bio|default:"Not set" }}</p>
+
+<div>
+  <p>Avatar:</p>
+  {% if viewed_user.profile.avatar %}
+    <img src="{{ viewed_user.profile.avatar.url }}" alt="user-avatar" style="max-width: 150px; border-radius: 50%;">
+  {% else %}
+    <p>No avatar loaded</p>
+  {% endif %}
+</div>
+{% if user.is_staff or user == viewed_user %}
+  <div>
+    <a href="{% url 'myauth:user-edit' pk=viewed_user.pk %}">
+      Edit Profile
+    </a>
+  </div>
+{% endif %}
+<p>
+  <a href="{% url 'myauth:users' %}">Back to Users List</a>
+</p>
+{% endblock body %}
